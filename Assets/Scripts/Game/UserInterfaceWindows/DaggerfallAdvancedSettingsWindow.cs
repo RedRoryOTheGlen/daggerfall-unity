@@ -98,6 +98,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         Checkbox spellLighting;
         Checkbox spellShadows;
         Checkbox bowDrawback;
+        Checkbox weaponSpeed;
         Checkbox toggleSneak;
         Checkbox alternateMusic;
 
@@ -254,6 +255,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             movementAcceleration = AddCheckbox(leftPanel, "movementAcceleration", DaggerfallUnity.Settings.MovementAcceleration);
             weaponAttackThreshold = AddTextbox(leftPanel, "weaponAttackThreshold", DaggerfallUnity.Settings.WeaponAttackThreshold.ToString());
             bowDrawback = AddCheckbox(leftPanel, "bowDrawback", DaggerfallUnity.Settings.BowDrawback);
+            weaponSpeed = AddCheckbox(leftPanel, "weaponSpeed", DaggerfallUnity.Settings.WeaponSpeed);
             toggleSneak = AddCheckbox(leftPanel, "toggleSneak", DaggerfallUnity.Settings.ToggleSneak);
 
             y = 0;
@@ -435,6 +437,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             if (float.TryParse(weaponAttackThreshold.Text, out weaponAttackThresholdValue))
                 DaggerfallUnity.Settings.WeaponAttackThreshold = Mathf.Clamp(weaponAttackThresholdValue, 0.001f, 1.0f);
             DaggerfallUnity.Settings.BowDrawback = bowDrawback.IsChecked;
+            DaggerfallUnity.Settings.WeaponSpeed = weaponSpeed.IsChecked;
             DaggerfallUnity.Settings.ToggleSneak = toggleSneak.IsChecked;
 
             DaggerfallUnity.Settings.AlternateMusic = alternateMusic.IsChecked;

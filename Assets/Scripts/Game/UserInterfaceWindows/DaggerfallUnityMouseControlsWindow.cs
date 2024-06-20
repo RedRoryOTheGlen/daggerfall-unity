@@ -45,6 +45,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
         protected HorizontalSlider mouseSmoothingSlider;
         protected HorizontalSlider weaponSwingModeSlider;
         protected Checkbox bowDrawbackCheckbox;
+        protected Checkbox weaponSpeedCheckbox;
         protected Checkbox toggleSneakCheckbox;
         protected TextBox weaponAttackThresholdTextbox;
         protected Button continueButton;
@@ -125,6 +126,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             weaponSwingModeSlider = CreateSlider(TextManager.Instance.GetLocalizedText("weaponSwingMode", TextCollections.TextSettings), 150, 90, DaggerfallUnity.Settings.WeaponSwingMode, TextManager.Instance.GetLocalizedTextList("weaponSwingModes", TextCollections.TextSettings));
             bowDrawbackCheckbox = AddOption(150, 120, TextManager.Instance.GetLocalizedText("bowDrawback", TextCollections.TextSettings), DaggerfallUnity.Settings.BowDrawback);
             toggleSneakCheckbox = AddOption(150, 130, TextManager.Instance.GetLocalizedText("toggleSneak", TextCollections.TextSettings), DaggerfallUnity.Settings.ToggleSneak);
+            weaponSpeedCheckbox = AddOption(150, 140, TextManager.Instance.GetLocalizedText("weaponSpeed", TextCollections.TextSettings), DaggerfallUnity.Settings.WeaponSpeed);
 
             weaponAttackThresholdTextbox = AddTextbox(TextManager.Instance.GetLocalizedText("mouseWeaponAttackThreshold", TextCollections.TextSettings), 20, 90, DaggerfallUnity.Settings.WeaponAttackThreshold.ToString());
 
@@ -351,6 +353,7 @@ namespace DaggerfallWorkshop.Game.UserInterfaceWindows
             DaggerfallUnity.Settings.InvertMouseVertical = invertMouseVerticalCheckbox.IsChecked;
             DaggerfallUnity.Settings.WeaponSwingMode = weaponSwingModeSlider.ScrollIndex;
             DaggerfallUnity.Settings.BowDrawback = bowDrawbackCheckbox.IsChecked;
+            DaggerfallUnity.Settings.WeaponSpeed = weaponSpeedCheckbox.IsChecked;
             DaggerfallUnity.Settings.ToggleSneak = toggleSneakCheckbox.IsChecked;
 
             float weaponAttackThresholdValue;

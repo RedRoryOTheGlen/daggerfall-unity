@@ -491,11 +491,55 @@ namespace DaggerfallWorkshop.Game
 
         IEnumerator AnimateWeapon()
         {
+            float interval = GameManager.classicUpdateInterval * FormulaHelper.GetMeleeWeaponSwingTickModifier(GameManager.Instance.PlayerEntity);
+            float intervalScale = 1;
+            bool started = false;   //BOOL TO CHECK IF ANIMATION HASN'T BEEN DETECTED
+            float swingTime = 0;
+
+            WeaponStates weaponStateLast = WeaponStates.Idle;
             while (true)
             {
                 if (weaponAnims != null && ShowWeapon)
                 {
                     int frameBeforeStepping = currentFrame;
+
+                    if (weaponStateLast != weaponState)                                                     //A NEW ANIMATION HAS STARTED, RESET BOOL
+                        started = false;
+
+                    if (weaponState != WeaponStates.Idle)
+                    {
+                        if (!started && currentFrame <= 1)                                                  //ON FIRST FRAME OF NEW ANIMATION, DO THESE
+                        {
+                            Debug.Log("EVENT - ON ATTACK START at frame " + currentFrame);
+                            started = true;
+
+                            swingTime = Time.unscaledTime;
+
+                            if (DaggerfallUnity.Settings.WeaponSpeed)
+                                intervalScale = 3;
+                            else
+                                intervalScale = 1;
+                        }
+                        else if (started && currentFrame >= weaponAnims[(int)weaponState].NumFrames - 2)   //ON LAST FRAME OF ANIMATION, DO THESE
+                        {
+                            Debug.Log("EVENT - ON ATTACK END at frame " + currentFrame);
+                            started = false;
+
+                            if (DaggerfallUnity.Settings.WeaponSpeed)
+                            {
+                                if (weaponState == WeaponStates.StrikeUp)
+                                    intervalScale = 3;
+                            }
+                            else
+                                intervalScale = 1;
+
+                            Debug.Log("SWING WAS " + (Time.unscaledTime-swingTime).ToString() + " SECONDS!");
+                        }
+                        else
+                            intervalScale = 1;
+                    }
+                    else
+                        intervalScale = 1;
 
                     // Special animation for unarmed attack to left
                     if ((WeaponType == WeaponTypes.Melee || WeaponType == WeaponTypes.Werecreature)
@@ -521,14 +565,18 @@ namespace DaggerfallWorkshop.Game
                     else
                     {
                         // Step frame
-                        currentFrame++;
+                        if (weaponStateLast == weaponState)             //PREVENTS FRAME 0 OF A NEW ANIMATION FROM BEING SKIPPED
+                            currentFrame++;
+
                         if (currentFrame >= weaponAnims[(int)weaponState].NumFrames)
                         {
                             if (IsPlayingOneShot())
                             {
                                 ChangeWeaponState(WeaponStates.Idle);   // If this is a one-shot anim go to queued weapon state
-                                if (WeaponType == WeaponTypes.Bow)
+
+                                if (WeaponType == WeaponTypes.Bow || DaggerfallUnity.Settings.WeaponSpeed)
                                     ShowWeapon = false;                 // Immediately hide bow so its idle frame doesn't show before it is hidden for its cooldown
+
                             }
                             else if (WeaponType == WeaponTypes.Bow && !DaggerfallUnity.Settings.BowDrawback)
                                 currentFrame = 3;
@@ -539,10 +587,17 @@ namespace DaggerfallWorkshop.Game
 
                     // Only update if the frame actually changed & weapon drawn
                     if (frameBeforeStepping != currentFrame)
+                    {
                         UpdateWeapon();
+                    }
                 }
 
-                yield return new WaitForSeconds(animTickTime);
+                weaponStateLast = weaponState;  //RECORD WEAPON STATE FOR USE IN NEXT UPDATE
+
+                if (DaggerfallUnity.Settings.WeaponSpeed)
+                    yield return new WaitForSeconds(interval * intervalScale);
+                else
+                    yield return new WaitForSeconds(animTickTime);
             }
         }
 

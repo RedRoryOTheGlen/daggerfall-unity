@@ -214,8 +214,15 @@ namespace DaggerfallWorkshop.Game
             if (!IsWeaponAttacking())
             {
                 // If an attack with a bow just finished, set cooldown
-                if (ScreenWeapon.WeaponType == WeaponTypes.Bow && isAttacking)
-                    cooldownTime = Time.time + FormulaHelper.GetBowCooldownTime(playerEntity);
+                if (isAttacking)
+                {
+                    if (ScreenWeapon.WeaponType == WeaponTypes.Bow)
+                        cooldownTime = Time.time + FormulaHelper.GetBowCooldownTime(playerEntity);
+                    else if (DaggerfallUnity.Settings.WeaponSpeed)
+                    {
+                        cooldownTime = Time.time + FormulaHelper.GetMeleeWeaponAttackTime(playerEntity);
+                    }
+                }
 
                 isAttacking = false;
                 isDamageFinished = false;

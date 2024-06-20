@@ -296,6 +296,7 @@ namespace DaggerfallWorkshop
         public bool InstantRepairs { get; set; }
         public bool AllowMagicRepairs { get; set; }
         public bool BowDrawback { get; set; }
+        public bool WeaponSpeed { get; set; }
 
         // [Map]
         public int AutomapNumberOfDungeons { get; set; }
@@ -532,6 +533,7 @@ namespace DaggerfallWorkshop
             InstantRepairs = GetBool(sectionControls, "InstantRepairs");
             AllowMagicRepairs = GetBool(sectionControls, "AllowMagicRepairs");
             BowDrawback = GetBool(sectionControls, "BowDrawback");
+            WeaponSpeed = GetBool(sectionControls, "WeaponSpeed");
 
             AutomapNumberOfDungeons = GetInt(sectionMap, "AutomapNumberOfDungeons", 0, 100);
             AutomapDisableMicroMap = GetBool(sectionMap, "AutomapDisableMicroMap");
@@ -729,6 +731,7 @@ namespace DaggerfallWorkshop
             SetBool(sectionControls, "InstantRepairs", InstantRepairs);
             SetBool(sectionControls, "AllowMagicRepairs", AllowMagicRepairs);
             SetBool(sectionControls, "BowDrawback", BowDrawback);
+            SetBool(sectionControls, "WeaponSpeed", WeaponSpeed);
 
             SetInt(sectionMap, "AutomapNumberOfDungeons", AutomapNumberOfDungeons);
             SetColor(sectionMap, "AutomapTempleColor", AutomapTempleColor);

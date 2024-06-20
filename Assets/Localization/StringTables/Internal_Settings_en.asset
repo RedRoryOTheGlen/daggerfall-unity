@@ -236,5 +236,9 @@ MonoBehaviour:
       and modding support
     m_Metadata:
       m_Items: []
+  - m_Id: 155095986577268736
+    m_Localized: Weapons - Alternate Speed
+    m_Metadata:
+      m_Items: []
   references:
     version: 1

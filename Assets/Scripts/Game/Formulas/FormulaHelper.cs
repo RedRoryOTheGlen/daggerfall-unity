@@ -837,6 +837,30 @@ namespace DaggerfallWorkshop.Game.Formulas
             return speed / classicFrameUpdate;
         }
 
+        public static float GetMeleeWeaponAttackTime(PlayerEntity player)
+        {
+            Func<PlayerEntity, float> del;
+            if (TryGetOverride("GetMeleeWeaponAttackTime", out del))
+                return del(player);
+            float timeClassic = ((3f * (115f - (float)player.Stats.LiveSpeed)) / (float)classicFrameUpdate) * 5f;
+            float timeSwing = GameManager.classicUpdateInterval * GetMeleeWeaponSwingTickModifier(player) * 7f;
+            float time = timeClassic - timeSwing;
+            Debug.Log("MELEE ATTACK TIME IS " + time.ToString() + " SECONDS! " + timeSwing.ToString() + " SWING/TOTAL " + timeClassic.ToString());
+            return time;
+        }
+
+        public static float GetMeleeWeaponSwingTickModifier(PlayerEntity player)
+        {
+            Func<PlayerEntity, float> del;
+            if (TryGetOverride("GetMeleeWeaponAttackTime", out del))
+                return del(player);
+
+            float mod = 1f + (((50f - (float)player.Stats.LiveSpeed)/50)*0.75f);
+
+            Debug.Log("MELEE ATTACK MOD IS " + mod.ToString());
+            return mod;
+        }
+
         public static float GetBowCooldownTime(PlayerEntity player)
         {
             Func<PlayerEntity, float> del;
