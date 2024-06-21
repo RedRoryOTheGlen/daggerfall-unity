@@ -506,41 +506,6 @@ namespace DaggerfallWorkshop.Game
                     if (weaponStateLast != weaponState)                                                     //A NEW ANIMATION HAS STARTED, RESET BOOL
                         started = false;
 
-                    if (weaponState != WeaponStates.Idle)
-                    {
-                        if (!started && currentFrame <= 1)                                                  //ON FIRST FRAME OF NEW ANIMATION, DO THESE
-                        {
-                            Debug.Log("EVENT - ON ATTACK START at frame " + currentFrame);
-                            started = true;
-
-                            swingTime = Time.unscaledTime;
-
-                            if (DaggerfallUnity.Settings.WeaponSpeed)
-                                intervalScale = 3;
-                            else
-                                intervalScale = 1;
-                        }
-                        else if (started && currentFrame >= weaponAnims[(int)weaponState].NumFrames - 2)   //ON LAST FRAME OF ANIMATION, DO THESE
-                        {
-                            Debug.Log("EVENT - ON ATTACK END at frame " + currentFrame);
-                            started = false;
-
-                            if (DaggerfallUnity.Settings.WeaponSpeed)
-                            {
-                                if (weaponState == WeaponStates.StrikeUp)
-                                    intervalScale = 3;
-                            }
-                            else
-                                intervalScale = 1;
-
-                            Debug.Log("SWING WAS " + (Time.unscaledTime-swingTime).ToString() + " SECONDS!");
-                        }
-                        else
-                            intervalScale = 1;
-                    }
-                    else
-                        intervalScale = 1;
-
                     // Special animation for unarmed attack to left
                     if ((WeaponType == WeaponTypes.Melee || WeaponType == WeaponTypes.Werecreature)
                         && WeaponState == WeaponStates.StrikeLeft)
@@ -584,6 +549,41 @@ namespace DaggerfallWorkshop.Game
                                 currentFrame = 0;                       // Otherwise keep looping frames
                         }
                     }
+
+                    if (weaponState != WeaponStates.Idle)
+                    {
+                        if (!started && currentFrame <= 1)                                                  //ON FIRST FRAME OF NEW ANIMATION, DO THESE
+                        {
+                            Debug.Log("EVENT - ON ATTACK START at frame " + currentFrame);
+                            started = true;
+
+                            swingTime = Time.unscaledTime;
+
+                            if (DaggerfallUnity.Settings.WeaponSpeed)
+                                intervalScale = 3;
+                            else
+                                intervalScale = 1;
+                        }
+                        else if (started && currentFrame >= weaponAnims[(int)weaponState].NumFrames - 1)   //ON LAST FRAME OF ANIMATION, DO THESE
+                        {
+                            Debug.Log("EVENT - ON ATTACK END at frame " + currentFrame);
+                            started = false;
+
+                            if (DaggerfallUnity.Settings.WeaponSpeed)
+                            {
+                                if (weaponState == WeaponStates.StrikeUp)
+                                    intervalScale = 3;
+                            }
+                            else
+                                intervalScale = 1;
+
+                            Debug.Log("SWING WAS " + (Time.unscaledTime - swingTime).ToString() + " SECONDS!");
+                        }
+                        else
+                            intervalScale = 1;
+                    }
+                    else
+                        intervalScale = 1;
 
                     // Only update if the frame actually changed & weapon drawn
                     if (frameBeforeStepping != currentFrame)
