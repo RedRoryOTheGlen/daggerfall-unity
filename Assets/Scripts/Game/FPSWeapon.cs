@@ -530,7 +530,11 @@ namespace DaggerfallWorkshop.Game
                     else
                     {
                         // Step frame
-                        if (weaponStateLast == weaponState)             //PREVENTS FRAME 0 OF A NEW ANIMATION FROM BEING SKIPPED
+                        if (DaggerfallUnity.Settings.WeaponSpeed)
+                        {
+                            if (weaponStateLast == weaponState)             //PREVENTS FRAME 0 OF A NEW ANIMATION FROM BEING SKIPPED
+                                currentFrame++;
+                        } else
                             currentFrame++;
 
                         if (currentFrame >= weaponAnims[(int)weaponState].NumFrames)
@@ -557,10 +561,11 @@ namespace DaggerfallWorkshop.Game
                             Debug.Log("EVENT - ON ATTACK START at frame " + currentFrame);
                             started = true;
 
-                            swingTime = Time.unscaledTime;
-
                             if (DaggerfallUnity.Settings.WeaponSpeed)
-                                intervalScale = 3;
+                            {
+                                interval = GameManager.classicUpdateInterval * FormulaHelper.GetMeleeWeaponSwingTickModifier(GameManager.Instance.PlayerEntity);
+                                intervalScale = 2;
+                            }
                             else
                                 intervalScale = 1;
                         }
@@ -572,15 +577,19 @@ namespace DaggerfallWorkshop.Game
                             if (DaggerfallUnity.Settings.WeaponSpeed)
                             {
                                 if (weaponState == WeaponStates.StrikeUp)
-                                    intervalScale = 3;
+                                    intervalScale = 4;
                             }
                             else
                                 intervalScale = 1;
-
-                            Debug.Log("SWING WAS " + (Time.unscaledTime - swingTime).ToString() + " SECONDS!");
                         }
                         else
                             intervalScale = 1;
+
+                        if (currentFrame == GetHitFrame())
+                        {
+                            Debug.Log("LAST HIT FRAME WAS " + (Time.unscaledTime - swingTime).ToString() + " SECONDS AGO!");
+                            swingTime = Time.unscaledTime;
+                        }
                     }
                     else
                         intervalScale = 1;

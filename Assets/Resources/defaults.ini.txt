@@ -144,6 +144,7 @@ MusicVolume = 0.5
 InstantRepairs = False
 AllowMagicRepairs = False
 BowDrawback = False
+WeaponSpeed = False
 
 [Map]
 AutomapNumberOfDungeons=5

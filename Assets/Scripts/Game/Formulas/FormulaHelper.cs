@@ -843,7 +843,7 @@ namespace DaggerfallWorkshop.Game.Formulas
             if (TryGetOverride("GetMeleeWeaponAttackTime", out del))
                 return del(player);
             float timeClassic = ((3f * (115f - (float)player.Stats.LiveSpeed)) / (float)classicFrameUpdate) * 5f;
-            float timeSwing = GameManager.classicUpdateInterval * GetMeleeWeaponSwingTickModifier(player) * 7f;
+            float timeSwing = GameManager.classicUpdateInterval * GetMeleeWeaponSwingTickModifier(player) * 6f;
             float time = timeClassic - timeSwing;
             Debug.Log("MELEE ATTACK TIME IS " + time.ToString() + " SECONDS! " + timeSwing.ToString() + " SWING/TOTAL " + timeClassic.ToString());
             return time;
