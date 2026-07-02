@@ -108,6 +108,14 @@ namespace DaggerfallWorkshop.Game
         // Allows the building greeting message boxes to be disabled by mods
         public static bool buildingGreetingsEnabled = true;
 
+        bool IsPointOutsideDistance(Vector3 point, float distance)
+        {
+            if (Vector3.Distance(PlayerHeightChanger.Instance.EyePosition, point) > distance)
+                return true;
+
+            return false;
+        }
+
         #region custom mod activation
         private struct CustomModActivation
         {
@@ -325,7 +333,7 @@ namespace DaggerfallWorkshop.Game
                     QuestResourceBehaviour questResourceBehaviour;
                     if (QuestResourceBehaviourCheck(hit, out questResourceBehaviour) && !(questResourceBehaviour.TargetResource is Person))
                     {
-                        if (hit.distance > DefaultActivationDistance)
+                        if (IsPointOutsideDistance(hit.point,DefaultActivationDistance))
                         {
                             DaggerfallUI.SetMidScreenText(TextManager.Instance.GetLocalizedText("youAreTooFarAway"));
                             return;
@@ -378,7 +386,7 @@ namespace DaggerfallWorkshop.Game
 
                     // Check for action record hit
                     DaggerfallAction action;
-                    if (ActionCheck(hit, out action) && hit.distance <= DefaultActivationDistance)
+                    if (ActionCheck(hit, out action) && !IsPointOutsideDistance(hit.point, DefaultActivationDistance))
                     {
                         action.Receive(this.gameObject, DaggerfallAction.TriggerTypes.Direct);
                     }
@@ -434,7 +442,7 @@ namespace DaggerfallWorkshop.Game
                     CustomModActivation customActivation;
                     if (customModActivations.TryGetValue(flatModelName, out customActivation))
                     {
-                        if (hit.distance <= customActivation.ActivationDistance)
+                        if (!IsPointOutsideDistance(hit.point, customActivation.ActivationDistance))
                         {
                             customActivation.Action(hit);
                         }
@@ -498,7 +506,7 @@ namespace DaggerfallWorkshop.Game
             if (CustomDoor.HasHit(hit, out door) || (doors && doors.HasHit(hit.point, out door)))
             {
                 // Check if close enough to activate
-                if (hit.distance > DoorActivationDistance)
+                if (IsPointOutsideDistance(hit.point, DoorActivationDistance))
                 {
                     DaggerfallUI.SetMidScreenText(TextManager.Instance.GetLocalizedText("youAreTooFarAway"));
                     return;
@@ -683,7 +691,7 @@ namespace DaggerfallWorkshop.Game
         void ActivateActionDoor(RaycastHit hit, DaggerfallActionDoor actionDoor)
         {
             // Check if close enough to activate
-            if (hit.distance > DoorActivationDistance)
+            if (IsPointOutsideDistance(hit.point, DoorActivationDistance))
             {
                 DaggerfallUI.SetMidScreenText(TextManager.Instance.GetLocalizedText("youAreTooFarAway"));
                 return;
@@ -706,7 +714,7 @@ namespace DaggerfallWorkshop.Game
         void ActivateBulletinBoard(RaycastHit hit, DaggerfallBulletinBoard bulletinBoard)
         {
             // Check if close enough to Activate
-            if (hit.distance > MobileNPCActivationDistance)
+            if (IsPointOutsideDistance(hit.point, MobileNPCActivationDistance))
             {
                 DaggerfallUI.SetMidScreenText(TextManager.Instance.GetLocalizedText("youAreTooFarAway"));
                 return;
@@ -758,7 +766,7 @@ namespace DaggerfallWorkshop.Game
                 case PlayerActivateModes.Grab:
                 case PlayerActivateModes.Talk:
                 case PlayerActivateModes.Steal:
-                    if (hit.distance > StaticNPCActivationDistance)
+                    if (IsPointOutsideDistance(hit.point, StaticNPCActivationDistance))
                     {
                         DaggerfallUI.SetMidScreenText(TextManager.Instance.GetLocalizedText("youAreTooFarAway"));
                         break;
@@ -775,7 +783,7 @@ namespace DaggerfallWorkshop.Game
                 case PlayerActivateModes.Info:
                 case PlayerActivateModes.Grab:
                 case PlayerActivateModes.Talk:
-                    if (hit.distance > MobileNPCActivationDistance)
+                    if (IsPointOutsideDistance(hit.point, MobileNPCActivationDistance))
                     {
                         DaggerfallUI.SetMidScreenText(TextManager.Instance.GetLocalizedText("youAreTooFarAway"));
                         break;
@@ -785,7 +793,7 @@ namespace DaggerfallWorkshop.Game
                 case PlayerActivateModes.Steal:
                     if (!mobileNpc.PickpocketByPlayerAttempted)
                     {
-                        if (hit.distance > PickpocketDistance)
+                        if (IsPointOutsideDistance(hit.point, PickpocketDistance))
                         {
                             DaggerfallUI.SetMidScreenText(TextManager.Instance.GetLocalizedText("youAreTooFarAway"));
                             break;
@@ -829,7 +837,7 @@ namespace DaggerfallWorkshop.Game
                     // Classic doesn't set any flag when pickpocketing enemy mobiles, so infinite attempts are possible
                     if (enemyEntity != null && !enemyEntity.PickpocketByPlayerAttempted)
                     {
-                        if (hit.distance > PickpocketDistance)
+                        if (IsPointOutsideDistance(hit.point, PickpocketDistance))
                         {
                             DaggerfallUI.SetMidScreenText(TextManager.Instance.GetLocalizedText("youAreTooFarAway"));
                             break;
@@ -847,7 +855,7 @@ namespace DaggerfallWorkshop.Game
             DaggerfallBookshelf bookshelf = hit.transform.GetComponent<DaggerfallBookshelf>();
             if (ladder || bookshelf)
             {
-                if (hit.distance > DefaultActivationDistance)
+                if (IsPointOutsideDistance(hit.point, DefaultActivationDistance))
                 {
                     DaggerfallUI.SetMidScreenText(TextManager.Instance.GetLocalizedText("youAreTooFarAway"));
                     return;
@@ -867,7 +875,7 @@ namespace DaggerfallWorkshop.Game
         {
             // Check if close enough to activate for all types, except for corpses
             if (loot.ContainerType != LootContainerTypes.CorpseMarker &&
-                hit.distance > TreasureActivationDistance)
+                IsPointOutsideDistance(hit.point, TreasureActivationDistance))
             {
                 DaggerfallUI.SetMidScreenText(TextManager.Instance.GetLocalizedText("youAreTooFarAway"));
                 return;
@@ -935,7 +943,7 @@ namespace DaggerfallWorkshop.Game
                     }
                     else
                     {   // Check if close enough to activate and that corpse has items
-                        if (hit.distance > CorpseActivationDistance)
+                        if (IsPointOutsideDistance(hit.point, CorpseActivationDistance))
                         {
                             DaggerfallUI.SetMidScreenText(TextManager.Instance.GetLocalizedText("youAreTooFarAway"));
                             return;

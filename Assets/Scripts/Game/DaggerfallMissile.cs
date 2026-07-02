@@ -517,11 +517,11 @@ namespace DaggerfallWorkshop.Game
                 return CustomAimPosition;
 
             // Aim position is from eye level for player or origin for other mobile
-            // Player must aim from camera position or it feels out of alignment
+            // Player must aim from eye position or it feels out of alignment
             Vector3 aimPosition = caster.transform.position;
             if (caster == gm.PlayerEntityBehaviour)
             {
-                aimPosition = gm.MainCamera.transform.position;
+                aimPosition = PlayerHeightChanger.Instance.EyePosition;
             }
 
             //projectile offset code moved here for accuracy

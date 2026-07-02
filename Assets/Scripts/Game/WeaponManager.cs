@@ -908,9 +908,11 @@ namespace DaggerfallWorkshop.Game
 
             DaggerfallUnityItem strikingWeapon = usingRightHand ? currentRightHandWeapon : currentLeftHandWeapon;
 
+            Vector3 eyePosition = PlayerHeightChanger.Instance.EyePosition;
+
             //make bounding box in front of player view
             float weaponReach = weapon.Reach + SphereCastRadius;
-            Vector3 boundsPos = mainCamera.transform.position + (mainCamera.transform.forward * (weaponReach * 0.5f));
+            Vector3 boundsPos = eyePosition + (mainCamera.transform.forward * (weaponReach * 0.5f));
             Quaternion boundsRot = mainCamera.transform.rotation;
             Vector3 boundsSize = new Vector3(weaponReach * 2, weaponReach, weaponReach);
 
@@ -918,7 +920,7 @@ namespace DaggerfallWorkshop.Game
             List<Collider> hitColliders = new List<Collider>();
 
             RaycastHit hit = new RaycastHit();
-            Ray ray = new Ray(mainCamera.transform.position, mainCamera.transform.forward);
+            Ray ray = new Ray(eyePosition, mainCamera.transform.forward);
 
             if (colliders.Length > 0)
             {
@@ -1050,15 +1052,15 @@ namespace DaggerfallWorkshop.Game
                 //perform weapon attack on each collider in list
                 foreach (Collider hitCollider in hitColliders)
                 {
-                    Vector3 hitPoint = hitCollider.ClosestPoint(mainCamera.transform.position);
-                    hitEnemy = WeaponDamage(strikingWeapon, false, false, hitCollider.transform, hitPoint, (hitPoint - mainCamera.transform.position).normalized);
+                    Vector3 hitPoint = hitCollider.ClosestPoint(eyePosition);
+                    hitEnemy = WeaponDamage(strikingWeapon, false, false, hitCollider.transform, hitPoint, (hitPoint - eyePosition).normalized);
                 }
             }
             else
             {
                 //if no hits were detected from bounds check, do vanilla attack check for bashing and hitting pacified NPCs and wandering commoners
                 //Logic: pacified NPCs and commoners can only be attacked if they are the only targets in front of the player
-                ray.origin = mainCamera.transform.position;
+                ray.origin = eyePosition;
                 ray.direction = mainCamera.transform.forward;
 
                 if (Physics.SphereCast(ray, SphereCastRadius, out hit, weapon.Reach, playerLayerMask))

@@ -35,6 +35,8 @@ namespace DaggerfallWorkshop.Game
     [RequireComponent(typeof(LevitateMotor))]
     public class PlayerHeightChanger : MonoBehaviour
     {
+        public static PlayerHeightChanger Instance;
+
         private HeightChangeAction heightAction;
         public HeightChangeAction HeightAction
         {
@@ -99,8 +101,19 @@ namespace DaggerfallWorkshop.Game
             set { ChangeStandingHeightAdjustment(value); }
         }
 
+        public Vector3 EyePosition
+        {
+            get
+            {
+                return controller.transform.position + controller.center + (Vector3.up * (controller.height / 2));
+            }
+        }
+
         private void Start()
         {
+            if (Instance == null)
+                Instance = this;
+
             playerMotor = GetComponent<PlayerMotor>();
             controller = GetComponent<CharacterController>();
             headBobber = GetComponent<HeadBobber>();
